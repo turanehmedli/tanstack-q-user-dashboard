@@ -1,15 +1,5 @@
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
-
-interface User {
-  id: number;
-  firstName: string;
-  lastName: string;
-  email: string;
-  phone?: string;
-  image?: string;
-  role?: "Admin" | "Editor" | "Viewer";
-  status?: "Active" | "Inactive";
-}
+import type { User } from "../utils/types";
 
 // Fetch all users from API
 const fetchUsers = async (): Promise<User[]> => {
@@ -17,6 +7,7 @@ const fetchUsers = async (): Promise<User[]> => {
   if (!response.ok) {
     throw new Error("Failed to fetch users");
   }
+  console.log(response)
   const data = await response.json();
 
   return data.users.map((user: any) => ({
@@ -26,6 +17,14 @@ const fetchUsers = async (): Promise<User[]> => {
     email: user.email,
     phone: user.phone,
     image: user.image,
+    age: user.age || 25,
+    gender: user.gender || "Male",
+    address: {
+      country: user.address?.country || "Unknown",
+    },
+    company: {
+      name: user.company?.name || "Unknown",
+    },
     role: (["Admin", "Editor", "Viewer"] as const)[
       Math.floor(Math.random() * 3)
     ],

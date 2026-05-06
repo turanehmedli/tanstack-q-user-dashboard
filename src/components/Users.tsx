@@ -11,19 +11,12 @@ import {
 } from "lucide-react";
 import { Users as UsersIcon, UserCheck, UserPlus, UserX } from "lucide-react";
 import { useGetUsers, useUpdateUser, useDeleteUser } from "../hooks/useUsers";
+import type { User } from "../utils/types";
 
-interface User {
-  id: number;
-  firstName: string;
-  lastName: string;
-  email: string;
-  phone?: string;
-  image?: string;
-  role?: "Admin" | "Editor" | "Viewer";
-  status?: "Active" | "Inactive";
-}
-
-interface EditingUser extends User {
+interface EditingUser extends Omit<
+  User,
+  "age" | "gender" | "address" | "company"
+> {
   isOpen: boolean;
   role: "Admin" | "Editor" | "Viewer";
   status: "Active" | "Inactive";
@@ -111,7 +104,8 @@ const Users: React.FC = () => {
 
   const handleSaveChanges = () => {
     if (editFormData) {
-      updateUserMutation.mutate(editFormData);
+      const { isOpen, ...userToUpdate } = editFormData;
+      updateUserMutation.mutate(userToUpdate as User);
     }
     setEditingUser(null);
     setEditFormData(null);
